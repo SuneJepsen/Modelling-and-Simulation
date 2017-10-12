@@ -128,6 +128,21 @@
 						</InitialValue>
 					</Properties>
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1507809416969</Id>
+					<Name><![CDATA[Server2]]></Name>
+					<X>90</X><Y>260</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 			</Variables>
 			<Events>
 				<Event>
@@ -188,17 +203,23 @@
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
 						</RecurrenceCode>
-						<Condition><![CDATA[Queue > 0 && Server == 0]]></Condition>
+						<Condition><![CDATA[Queue > 0 && (Server == 0 || Server2 == 0)]]></Condition>
 					</Properties>
 					<Action><![CDATA[Queue--;
-Server++;
-Service.restart();
+if(Server==0){ 
+	Server++;
+	Service.restart();
+}
+else{ 
+	Server2++;
+	Service2.restart();
+}
 Move.restart();]]></Action>
 				</Event>
 				<Event>
 					<Id>1507020967218</Id>
 					<Name><![CDATA[Service]]></Name>
-					<X>100</X><Y>270</Y>
+					<X>110</X><Y>310</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -226,12 +247,43 @@ Move.restart();]]></Action>
 					</Properties>
 					<Action><![CDATA[Server--;]]></Action>
 				</Event>
+				<Event>
+					<Id>1507809483038</Id>
+					<Name><![CDATA[Service2]]></Name>
+					<X>110</X><Y>340</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="userControls">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[normal(0.1,0.8)]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_SECOND]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1507104000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[Server2--;]]></Action>
+				</Event>
 			</Events>
 			<AnalysisData>
     			<Statistics>
 					<Id>1507021816856</Id>
 					<Name><![CDATA[QueueLength]]></Name>
-					<X>100</X><Y>310</Y>
+					<X>110</X><Y>380</Y>
 					<Label><X>15</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -253,7 +305,7 @@ Move.restart();]]></Action>
     			<Statistics>
 					<Id>1507021887219</Id>
 					<Name><![CDATA[ServerUtil]]></Name>
-					<X>100</X><Y>340</Y>
+					<X>110</X><Y>410</Y>
 					<Label><X>15</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -270,13 +322,13 @@ Move.restart();]]></Action>
 						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
 					</RecurrenceCode>
 					<Discrete>false</Discrete>
-					<ValueCode><![CDATA[Server]]></ValueCode>
+					<ValueCode><![CDATA[Server + Server2]]></ValueCode>
 				</Statistics>
     			<HistogramData>
 					<Id>1507022784171</Id>
 					<Name><![CDATA[ServerHist]]></Name>
-					<X>110</X><Y>430</Y>
-					<Label><X>15</X><Y>0</Y></Label>
+					<X>110</X><Y>440</Y>
+					<Label><X>15</X><Y>5</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
@@ -292,6 +344,37 @@ Move.restart();]]></Action>
 						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
 					</RecurrenceCode>
 					<Value><![CDATA[Server]]></Value>
+					<NumberOfIntervals>2</NumberOfIntervals>
+					<MinMaxAutodetect>true</MinMaxAutodetect>
+					<RangeMinExpression><![CDATA[0]]></RangeMinExpression>
+					<RangeMaxExpression><![CDATA[1]]></RangeMaxExpression>
+					<InitialIntervalSize><![CDATA[1]]></InitialIntervalSize>
+					<CalculateCDF>true</CalculateCDF>
+					<CalculatePercentiles>false</CalculatePercentiles>
+					<LowPercent>10</LowPercent>
+					<HighPercent>10</HighPercent>
+					<Title><![CDATA[]]></Title>
+				</HistogramData>
+    			<HistogramData>
+					<Id>1507809609251</Id>
+					<Name><![CDATA[ServerHist2]]></Name>
+					<X>110</X><Y>480</Y>
+					<Label><X>15</X><Y>5</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<AutoUpdate>true</AutoUpdate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1507104000000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[0.1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+					</RecurrenceCode>
+					<Value><![CDATA[Server2]]></Value>
 					<NumberOfIntervals>2</NumberOfIntervals>
 					<MinMaxAutodetect>true</MinMaxAutodetect>
 					<RangeMinExpression><![CDATA[0]]></RangeMinExpression>
@@ -348,15 +431,15 @@ Move.restart();]]></Action>
 						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
 					</RecurrenceCode>
 					<EmbeddedIcon>false</EmbeddedIcon>
-					<Width>450</Width>
-					<Height>330</Height>
+					<Width>580</Width>
+					<Height>400</Height>
 					<BackgroundColor/>
 					<BorderColor/>
 					<ChartArea>
 						<XOffset>50</XOffset>
 						<YOffset>30</YOffset>
-						<Width>370</Width>
-						<Height>240</Height>
+						<Width>500</Width>
+						<Height>310</Height>
 						<BackgroundColor>-1</BackgroundColor>
 						<BorderColor>-16777216</BorderColor>
 						<GridColor>-12566464</GridColor>
@@ -416,6 +499,15 @@ Move.restart();]]></Action>
 						<PointStyle>NONE</PointStyle>
 						<LineWidth>2.0</LineWidth>
 					</DatasetExpression>
+					<DatasetExpression>  
+						<Title><![CDATA[Server 2]]></Title>
+					<Expression><![CDATA[my_dataset4]]></Expression>
+					<Color>-5952982</Color>
+					<Expression2><![CDATA[Server2]]></Expression2>
+					<Expression2Flag>true</Expression2Flag>
+						<PointStyle>NONE</PointStyle>
+						<LineWidth>1.0</LineWidth>
+					</DatasetExpression>
 					<SamplesToKeep>100</SamplesToKeep>
 					<TimeWindowExpression><![CDATA[100]]></TimeWindowExpression>
 					<LabelFormat>MODEL_TIME_UNITS</LabelFormat>
@@ -423,7 +515,7 @@ Move.restart();]]></Action>
     			<Histogram>
 					<Id>1507022911710</Id>
 					<Name><![CDATA[Hist]]></Name>
-					<X>310</X><Y>360</Y>
+					<X>290</X><Y>390</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -440,14 +532,14 @@ Move.restart();]]></Action>
 						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
 					</RecurrenceCode>
 					<EmbeddedIcon>false</EmbeddedIcon>
-					<Width>260</Width>
+					<Width>420</Width>
 					<Height>210</Height>
 					<BackgroundColor/>
 					<BorderColor/>
 					<ChartArea>
 						<XOffset>50</XOffset>
 						<YOffset>30</YOffset>
-						<Width>180</Width>
+						<Width>340</Width>
 						<Height>120</Height>
 						<BackgroundColor>-1</BackgroundColor>
 						<BorderColor>-16777216</BorderColor>
@@ -480,7 +572,70 @@ Move.restart();]]></Action>
 						<ColorHighPercent>-32944</ColorHighPercent>
 						<ColorMean>-9807155</ColorMean>
 						<LineWidth>2</LineWidth>						
-						<Title><![CDATA[ServerHist]]></Title>							
+						<Title><![CDATA[Server 1]]></Title>							
+					</HistogramDataExpression>
+    			</Histogram>
+    			<Histogram>
+					<Id>1507810493893</Id>
+					<Name><![CDATA[hist]]></Name>
+					<X>670</X><Y>390</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<AutoUpdate>false</AutoUpdate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1507881600000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+					</RecurrenceCode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Width>280</Width>
+					<Height>210</Height>
+					<BackgroundColor/>
+					<BorderColor/>
+					<ChartArea>
+						<XOffset>50</XOffset>
+						<YOffset>30</YOffset>
+						<Width>200</Width>
+						<Height>120</Height>
+						<BackgroundColor>-1</BackgroundColor>
+						<BorderColor>-16777216</BorderColor>
+						<GridColor>-12566464</GridColor>
+					</ChartArea>
+					<Legend>
+						<Place>SOUTH</Place>
+						<TextColor>-16777216</TextColor>
+						<Size>30</Size>
+					</Legend>
+					<Labels>
+						<HorLabelsPosition>DEFAULT</HorLabelsPosition>
+						<VerLabelsPosition>DEFAULT</VerLabelsPosition>
+						<TextColor>-12566464</TextColor>
+					</Labels>
+					<Persistent>true</Persistent>
+					<ShowLegend>true</ShowLegend>
+					<ShowPDF>true</ShowPDF>
+					<ShowCDF>false</ShowCDF>
+					<ShowMean>false</ShowMean>
+					<Bars>
+						<Direction>UP</Direction>
+						<RelativeWidth>0.8</RelativeWidth>
+					</Bars>
+					<HistogramDataExpression>
+					<Expression><![CDATA[ServerHist2]]></Expression>
+						<ColorPDF>-2987746</ColorPDF>
+						<ColorCDF>-32944</ColorCDF>
+						<ColorLowPercent>-3137392</ColorLowPercent>
+						<ColorHighPercent>-29696</ColorHighPercent>
+						<ColorMean>-2354116</ColorMean>
+						<LineWidth>1</LineWidth>						
+						<Title><![CDATA[Server 2]]></Title>							
 					</HistogramDataExpression>
     			</Histogram>
 			</Charts>
@@ -635,11 +790,11 @@ getPresentation().setPresentable( getEngine().getRoot() );]]></ActionCode>
 				<UIProperty Name="Toolbar View" Value="false"/>
 			</PresentationProperties>
 			<ModelTimeProperties>
-				<StopOption><![CDATA[Never]]></StopOption>
+				<StopOption><![CDATA[Stop at specified time]]></StopOption>
 				<InitialDate><![CDATA[1506988800000]]></InitialDate>	
 				<InitialTime><![CDATA[0.0]]></InitialTime>	
-				<FinalDate><![CDATA[1509667200000]]></FinalDate>	
-				<FinalTime><![CDATA[100.0]]></FinalTime>	
+				<FinalDate><![CDATA[1507588800000]]></FinalDate>	
+				<FinalTime><![CDATA[10000.0]]></FinalTime>	
 			</ModelTimeProperties>
 		</SimulationExperiment>	
 	</Experiments>
